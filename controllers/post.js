@@ -3,7 +3,7 @@ const Post = require("../models/post");
 const User = require("../models/user");
 
 
-//------get cal-------
+//------get call-------
 
 exports.getposts = (req, res) => {
       Post.find().select("_id name age address")
@@ -72,7 +72,7 @@ exports.register= async(req,res)=> {
   const notNewUser = await User.isThisEmailInUse(username)
 if(notNewUser){
     console.log("is already registered",notNewUser)
-    return res.status(400).json({message:"this email already in use try login"})
+    return res.status(200).json({message:"this email already in use try login"})
 }
 
  try {
