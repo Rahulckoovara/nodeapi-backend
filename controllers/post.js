@@ -109,7 +109,7 @@ exports.login = async (req, res) => {
         console.log("user is -----", user);
         
         if (!user) {
-            return res.status(400).json({ error: 'Invalid username' });
+            return res.status(200).json({ error: 'Invalid username' });
         }
 
         const isMatch = await user.comparePassword(password);
@@ -117,7 +117,7 @@ exports.login = async (req, res) => {
 
         if (!isMatch) {
             console.log("not match------------");
-            return res.status(400).json({ error: "Invalid password" });
+            return res.status(200).json({ error: "Invalid password" });
         }
 
         // Generate a new token with a 2-hour expiration
