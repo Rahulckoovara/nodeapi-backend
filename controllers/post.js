@@ -24,6 +24,52 @@ exports.getposts = (req, res) => {
     // });
 };
 
+//get registered data
+
+
+exports.getUsers= async(req,res)=>{
+    
+    try{
+        const users= await User.find()
+        .select("-tokens -password -__v")
+        res.json({
+            userDetails:users
+        });
+    }catch(err)
+    {
+        res.status(500).json({ message: 'An error occurred', err });
+
+    }
+
+    // User.find().
+    // select("-tokens -password -__v")
+    // .then((apiData)=>{
+    //     res.json({
+    //         Details:apiData
+    //     })
+    // })
+}
+
+// In your postControllers file
+exports.getUserById = async (req, res) => {
+    const { id } = req.params; // Get user ID from URL params
+
+    try {
+        // Find the user by ID, excluding sensitive fields
+        const user = await User.findById(id).select('-tokens -password -__v');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({ userDetails: user });
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred', error });
+    }
+};
+
+
+
 //post call-------------------------------------------
 
 exports.createPost= async (req,res)=>{ 
@@ -139,57 +185,15 @@ exports.login = async (req, res) => {
         await User.findByIdAndUpdate(user._id, { tokens: newTokens });
 
         // Respond with the generated token
-        res.status(200).json({ message: "Login successful", token });
+        res.status(200).json({ userId: user._id, message: "Login successful", token });
         console.log('token:', token);
     } catch (e) {
         res.status(400).json({ error: e.message });
     }
 };
 
-//logout 
 
-
-// Logout function to invalidate the token
-// exports.logout = async(req, res) => { 
-//     const authHeader = req.headers.authorization;
-//     if (!authHeader) {
-//         return res.status(401).json({ error: 'Access denied, token missing!' });
-//     }
-
-//     const tokenParts = authHeader.split(' ');
-//     if (tokenParts[0] !== 'Bearer' || tokenParts.length !== 2) {
-//         return res.status(401).json({ error: 'Access denied, invalid token format!' });
-//     }
-
-//     const token = tokenParts[1];
-//     const{username}=req.body;
-//     const user =await User.findOne({username})
-//     console.log("logging out user---------------------",user)
-//     // Decode the token to get its payload
-//     let decoded;
-//     try {
-        
-//         decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     } catch (err) {
-//         return res.status(400).json({ error: 'Invalid token' });
-//     }
-
-//     // Create a new token with a very short expiration time (e.g., 1 second)
-//     const newToken = jwt.sign(  
-//         { _id: user._id },
-//         process.env.JWT_SECRET,
-//         { expiresIn: '1s' }
-//     );
-
-//     return res.status(200).json({
-//         message: 'Successfully logged out',
-//         token: newToken
-//     });
-// };
-
-
-
-
+// ////
 
 
 // module.exports = {
