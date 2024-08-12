@@ -68,7 +68,7 @@ return res.status(400).json
 
 exports.register= async(req,res)=> {
 
- const {username,password,image}= req.body;
+ const {username,name,password,image}= req.body;
   const notNewUser = await User.isThisEmailInUse(username)
 if(notNewUser){
     console.log("is already registered",notNewUser)
@@ -76,7 +76,7 @@ if(notNewUser){
 }
 
  try {
-  const user = new User({username, password, image});
+  const user = new User({username,name, password, image});
   console.log("user----",user)
 
 
