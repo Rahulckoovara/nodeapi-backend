@@ -37,6 +37,8 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 // app.use(expressValidator());
 app.use('/',postRoutes);
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 
 const port = process.env.PORT ||8080 ;
