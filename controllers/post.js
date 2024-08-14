@@ -35,7 +35,8 @@ exports.getUsers= async(req,res)=>{
         res.json({
             userDetails:users
         });
-    }catch(err)
+    }
+    catch(err)
     {
         res.status(500).json({ message: 'An error occurred', err });
 
@@ -54,11 +55,14 @@ exports.getUsers= async(req,res)=>{
 //update the user values fetch from the id
 
 exports.updateUser= async(req,res)=>{
+
+
     const {id}=req.params;
     const {name,password,image} =req.body
 
     try{
-        const {user}=await User.findById(id);
+        const user =  await User.findById(id);
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
           }
@@ -69,7 +73,7 @@ exports.updateUser= async(req,res)=>{
             user.password=password
         if(image)
             user.image=image
-      await   user.save() 
+      await  user.save() 
 
       res.status(200).json({message:"user updated successfully",
         user:{
