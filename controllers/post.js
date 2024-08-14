@@ -75,7 +75,9 @@ exports.updateUser= async(req,res)=>{
             user.image=image
       await  user.save() 
 
-      res.status(200).json({id:_id.user._id, message:"user details successfully",
+      res.status(200).json({
+         _id:_id.user._id,
+         message:"user details successfully",
     //     user:{
     //     _id: user._id,
     //     username: user.username,
