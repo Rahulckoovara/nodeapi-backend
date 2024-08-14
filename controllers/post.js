@@ -77,7 +77,7 @@ exports.updateUser= async(req,res)=>{
 
       res.status(200).json({
         //  _id:_id.user._id,
-         message:"user details successfully",
+         message:"user details successfully updated",
     //     user:{
     //     _id: user._id,
     //     username: user.username,
