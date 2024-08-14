@@ -50,6 +50,44 @@ exports.getUsers= async(req,res)=>{
     // })
 }
 
+
+//update the user values fetch from the id
+
+exports.updateUser= async(req,res)=>{
+    const {id}=req.params;
+    const {name,password,image} =req.body
+
+    try{
+        const {user}=await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+          }
+
+          if(name)
+            user.name=name
+        if(password)
+            user.password=password
+        if(image)
+            user.image=image
+      await   user.save() 
+
+      res.status(200).json({message:"user updated successfully",
+        user:{
+        _id: user._id,
+        username: user.username,
+        name: user.name,
+        image: user.image,
+      }
+      });
+    }
+    catch(e){
+        res.status(400).json({
+            error:e
+        })
+    }
+}
+
+
 // In your postControllers file
 exports.getUserById = async (req, res) => {
     const { id } = req.params; // Get user ID from URL params
@@ -92,6 +130,16 @@ return res.status(400).json
     error:err
 });
 }
+
+
+
+
+
+
+
+
+
+
     // postCall.save((err,result) => {
     //     if(err)
     //     {

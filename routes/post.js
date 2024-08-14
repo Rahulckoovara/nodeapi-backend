@@ -21,6 +21,11 @@ router.get("/userdetails",authenticateToken, postControllers.getUsers);
 //fetch the user data with the user id
 router.get("/userdetails/:id",authenticateToken, postControllers.getUserById);
 
+
+//update the user data with the user id
+router.put("/userdetails/:id", postControllers.updateUser);
+
+
 //logout
 //router.post("/logout",authenticateToken, postControllers.logout);
 
