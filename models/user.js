@@ -14,24 +14,32 @@ const userSchema= new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true  },
+    required: true 
+   },
 
-    image:{
-      type:String,
-      required :true
+  image: {
+    type:String,
+    required :true
   },
 
     tokens:[{
       type:Object
-    }]
+    }],
+
+    isowner:{
+      type:Boolean,
+      default:false
+    }
 });
 
   //middle ware for hashing
   userSchema.pre('save',async function(next){
-    if(!this.isModified('password')){
+    if(!this.isModified('password'))
+    {
         return next();
     }
-    try{
+
+try{
 const salt= await bycrypt.genSalt(10)
 this.password = await bycrypt.hash(this.password, salt)
 return next();

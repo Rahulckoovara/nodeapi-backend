@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Post = require("../models/post");
 const User = require("../models/user");
+const Assets = require("../models/housedetails");
 
 
 //------get call-------
@@ -56,34 +57,35 @@ exports.getUsers= async(req,res)=>{
 
 exports.updateUser= async(req,res)=>{
 
-
     const {id}=req.params;
     const {name,password,image} =req.body
 
     try{
         const user =  await User.findById(id);
-
-        if (!user) {
+        if (!user) 
+          {
             return res.status(404).json({ message: "User not found" });
           }
 
-          if(name)
+        if(name)
             user.name=name
         if(password)
             user.password=password
         if(image)
             user.image=image
-      await  user.save() 
+        await  user.save() 
 
       res.status(200).json({
         //  _id:_id.user._id,
          message:"user details successfully updated",
+
     //     user:{
     //     _id: user._id,
     //     username: user.username,
     //     name: user.name,
     //     image: user.image,
     //   }
+
       });
     }
     catch(e){
@@ -139,13 +141,6 @@ return res.status(400).json
 
 
 
-
-
-
-
-
-
-
     // postCall.save((err,result) => {
     //     if(err)
     //     {
@@ -168,7 +163,7 @@ return res.status(400).json
 
 exports.register= async(req,res)=> {
 
- const {username,name,password,image}= req.body;
+ const {username,isowner, name,password,image}= req.body;
   const notNewUser = await User.isThisEmailInUse(username)
 if(notNewUser){
     console.log("is already registered",notNewUser)
@@ -176,7 +171,8 @@ if(notNewUser){
 }
 
  try {
-  const user = new User({username,name, password, image});
+
+  const user = new User({username,isowner,name, password, image});
   console.log("user----",user)
 
 
@@ -247,9 +243,41 @@ exports.login = async (req, res) => {
 };
 
 
-// ////
+//call for the data uploading of the assets details
+
+exports.assets= async(req ,res)=>{
+ const { assetname, 
+    location, 
+    bedrooms, 
+    commonHall, 
+    bathroom, 
+    description, 
+    thumbimage, 
+    contact, 
+    gallery }= req.body;
 
 
-// module.exports = {
-//     getposts
-// }
+   try{
+    const assets= new Assets({assetname, 
+        location, 
+        bedrooms, 
+        commonHall, 
+        bathroom, 
+        description, 
+        thumbimage, 
+        contact, 
+        gallery });
+
+        console.log("assetss---",assets)
+// store it in the database
+        await assets.save();
+
+        res.status(200).json({ 
+            message: "data uploaded succesfully"});
+
+}
+catch(e){
+res.status(400).json({
+    error:e
+})
+}};

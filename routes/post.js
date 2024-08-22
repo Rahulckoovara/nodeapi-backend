@@ -25,6 +25,10 @@ router.get("/userdetails/:id",authenticateToken, postControllers.getUserById);
 //update the user data with the user id
 router.put("/userdetails/:id", postControllers.updateUser);
 
+//registering the asset with details
+
+router.post("/assetdetails",postControllers.assets);
+
 
 //logout
 //router.post("/logout",authenticateToken, postControllers.logout);
