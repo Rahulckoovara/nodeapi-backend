@@ -162,7 +162,6 @@ return res.status(400).json
 // login register api call----------------------------
 
 exports.register= async(req,res)=> {
-
  const {username,isowner, name,password,image}= req.body;
   const notNewUser = await User.isThisEmailInUse(username)
 if(notNewUser){
@@ -205,7 +204,9 @@ exports.login = async (req, res) => {
         console.log("user is -----", user);
         
         if (!user) {
+
             return res.status(200).json({ error: 'Invalid username' });
+
         }
 
         const isMatch = await user.comparePassword(password);
@@ -232,11 +233,13 @@ exports.login = async (req, res) => {
         const newTokens = [...oldTokens, { token, signedAt: Date.now().toString() }];
 
         // Update the user with the new list of tokens
-        await User.findByIdAndUpdate(user._id, { tokens: newTokens });
+        await User.findByIdAndUpdate(user._id, 
+            { tokens: newTokens });
 
         // Respond with the generated token
         res.status(200).json({ userId: user._id, message: "Login successful", token });
         console.log('token:', token);
+
     } catch (e) {
         res.status(400).json({ error: e.message });
     }
@@ -246,15 +249,21 @@ exports.login = async (req, res) => {
 //call for the data uploading of the assets details
 
 exports.assets= async(req ,res)=>{
- const { assetname, 
+
+ const {
+    assetname, 
     location, 
     bedrooms, 
     commonHall, 
-    bathroom, 
+    bathroom,
+
     description, 
+    price,
     thumbimage, 
+
     contact, 
-    gallery }= req.body;
+    gallery 
+   }= req.body;
 
 
    try{
@@ -263,7 +272,8 @@ exports.assets= async(req ,res)=>{
         bedrooms, 
         commonHall, 
         bathroom, 
-        description, 
+        description,
+        price, 
         thumbimage, 
         contact, 
         gallery });
