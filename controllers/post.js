@@ -237,7 +237,7 @@ exports.login = async (req, res) => {
             { tokens: newTokens });
 
         // Respond with the generated token
-        res.status(200).json({ userId: user._id, message: "Login successful", token });
+        res.status(200).json({ userId: user._id,isowner:user.isowner, message: "Login successful", token });
         console.log('token:', token);
 
     } catch (e) {

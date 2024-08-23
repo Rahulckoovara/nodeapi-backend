@@ -30,6 +30,8 @@ router.put("/userdetails/:id", postControllers.updateUser);
 router.post("/assetdetails",postControllers.assets);
 
 
+
+
 //logout
 //router.post("/logout",authenticateToken, postControllers.logout);
 
