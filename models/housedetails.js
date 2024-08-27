@@ -2,6 +2,11 @@ const mongoose = require("mongoose")
 
 const assetSchema= new mongoose.Schema({
 
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // model of the user
+    required: true,
+  },
   assetname: {
     type:String,
     required: true,
