@@ -37,6 +37,10 @@ router.get("/assets/:userId", postControllers.getUserAssetById);
 //8get all the asset details
 router.get("/assets", postControllers.getAllAssets);
 
+
+// Fetch the details of a specific asset under the user by assetId
+router.get("/assets/:userId/:assetId", postControllers.getUserAssetDetailsById);
+
 //logout
 //router.post("/logout",authenticateToken, postControllers.logout);
 

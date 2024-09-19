@@ -311,3 +311,28 @@ exports.getAllAssets=async(req,res)=>{
         })
     }
 };
+
+
+// Fetch the details of a specific asset under the user by assetId
+exports.getUserAssetDetailsById = async (req, res) => {
+  const { userId, assetId } = req.params;
+
+  try {
+    // Find the specific asset that matches the given userId and assetId
+    const asset = await Assets.findOne({ userId: userId, _id: assetId });
+
+    if (!asset) {
+      return res.status(404).json({
+        message: "Asset not found for the given user",
+      });
+    }
+
+    res.status(200).json({
+      asset: asset,
+    });
+  } catch (e) {
+    res.status(500).json({
+      error: e.message,
+    });
+  }
+};
