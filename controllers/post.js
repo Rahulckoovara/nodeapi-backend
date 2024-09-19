@@ -275,6 +275,7 @@ exports.getUserAssetById = async (req, res) => {
   const { userId } = req.params;
 
   try {
+
     // Find all assets that match the given userId
     const assets = await Assets.find({ userId: userId });
 
@@ -295,8 +296,8 @@ exports.getUserAssetById = async (req, res) => {
   }
 };
 
-//fetch all the asset details
 
+//fetch all the asset details
 exports.getAllAssets=async(req,res)=>{
     try{
         const assets = await Assets.find().select("-__v");

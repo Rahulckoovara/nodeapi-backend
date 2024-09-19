@@ -9,31 +9,32 @@ router.get("/",requireLogin, postControllers.getposts);
 router.post("/post", requireLogin, createPostValidator, postControllers.createPost);
 
 
-// Route for user registration
+//1 Route for user registration
 router.post("/register", postControllers.register); // Route for user registration
 
-// Route for user login
+//2 Route for user login
 router.post("/login", postControllers.login); 
 
-//get the registered data
+//3get the registered data
 router.get("/userdetails",authenticateToken, postControllers.getUsers);
 
-//fetch the user data with the user id
+//4fetch the user data with the user id
 router.get("/userdetails/:id",authenticateToken, postControllers.getUserById);
 
 
-//update the user data with the user id
+//5update the user data with the user id
 router.put("/userdetails/:id", postControllers.updateUser);
 
 
-//registering the asset with details
+//6registering the asset with details
 router.post("/assetdetails",postControllers.assets);
 
 
-//getting the user details by the if from the user
+//7getting the user details by the if from the user
 router.get("/assets/:userId",postControllers.getUserAssetById);
 
-//get all the asset details
+
+//8get all the asset details
 router.get("/assets",postControllers.getAllAssets);
 
 
