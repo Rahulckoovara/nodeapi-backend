@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 const Post = require("../models/post");
 const User = require("../models/user");
 const Assets = require("../models/housedetails");
-
+const Notification = require("../models/notification"); 
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 //------get call-------
 
 exports.getposts = (req, res) => {
@@ -31,8 +33,7 @@ exports.getUsers = async (req, res) => {
     res.status(200).json({
       userDetails: users,
     });
-
-  }catch (err) {
+  } catch (err) {
     res.status(500).json({ message: "An error occurred", err });
   }
   // User.find().
@@ -43,7 +44,6 @@ exports.getUsers = async (req, res) => {
   //     })
   // })
 };
-
 
 //update the user values fetch from the id
 
@@ -161,7 +161,7 @@ exports.register = async (req, res) => {
   }
 };
 
-//login api call-----------------------------
+//login api call-----------------------------------------------------------------------------
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -216,10 +216,6 @@ exports.login = async (req, res) => {
   }
 };
 
-
-
-
-
 //call for the data uploading of the assets details
 
 exports.assets = async (req, res) => {
@@ -268,19 +264,15 @@ exports.assets = async (req, res) => {
   }
 };
 
-
 //fetch the assets details under the specific user
-
 exports.getUserAssetById = async (req, res) => {
   const { userId } = req.params;
 
   try {
-
     // Find all assets that match the given userId
     const assets = await Assets.find({ userId: userId });
-
     if (assets.length == 0) {
-        return res.status(404).json({
+      return res.status(404).json({
         message: "No assets found",
       });
     }
@@ -288,30 +280,26 @@ exports.getUserAssetById = async (req, res) => {
     res.status(200).json({
       assets: assets,
     });
-  }
-   catch (e) {
+  } catch (e) {
     res.status(500).json({
       error: e,
     });
   }
 };
 
-
 //fetch all the asset details
-exports.getAllAssets=async(req,res)=>{
-    try{
-        const assets = await Assets.find().select("-__v");
-        res.status(200).json({
-            assets:assets
-        })
-    }
-    catch(e){
-        res.json({
-            error:e
-        })
-    }
+exports.getAllAssets = async (req, res) => {
+  try {
+    const assets = await Assets.find().select("-__v");
+    res.status(200).json({
+      assets: assets,
+    });
+  } catch (e) {
+    res.json({
+      error: e,
+    });
+  }
 };
-
 
 // Fetch the details of a specific asset under the user by assetId
 exports.getUserAssetDetailsById = async (req, res) => {
@@ -323,7 +311,8 @@ exports.getUserAssetDetailsById = async (req, res) => {
 
     if (!asset) {
       return res.status(404).json({
-        message: "Asset not found for the given user",
+      message: "Asset not found for the given user",
+
       });
     }
 
@@ -333,6 +322,138 @@ exports.getUserAssetDetailsById = async (req, res) => {
   } catch (e) {
     res.status(500).json({
       error: e.message,
+    });
+  }
+};
+// exports.sendInterestMessage = async (req, res) => {
+//   const { assetId } = req.params; // Only assetId is needed here
+//   const interestedUserId = req.body.interestedUserId; // Assuming the interested user's ID is sent in the body
+//   console.log("interestedUserId:", interestedUserId);
+
+//   try {
+//     // Find the asset that matches the given assetId
+//     const asset = await Assets.findOne({ _id: assetId });
+
+//     if (!asset) {
+//       console.log("Asset not found with assetId:", assetId);
+//       return res.status(404).json({
+//         message: "Asset not found",
+//       });
+//     }
+
+//   // Log the asset and its userId for debugging
+//   //  console.log("Found Asset:", asset);
+  
+//     console.log("Asset userId:", asset.userId);
+
+//     // Ensure both sides are compared as strings
+//     const assetOwner = await User.findOne({ _id: new ObjectId(asset.userId)  });
+//     console.log("Asset Owner:", assetOwner);
+
+//     if (!assetOwner) {
+//       console.log(
+//         "Asset owner not found with userId:",
+//         asset.userId.toString()
+//       );
+//       return res.status(404).json({
+//         message: "Asset owner not found",
+//       });
+//     }
+
+//     // Log the found asset owner
+//     console.log("Found Asset Owner:", assetOwner);
+
+//     // Send a message to the asset owner
+//     const messageTitle = "This user has shown interest in your asset";
+//     const messageBody = `User ${interestedUserId} has shown interest in your asset with ID: ${assetId}`;
+
+//     // Store the message in the database (if you have a 'Messages' model)
+//     const message = new message({
+//       senderId: interestedUserId,
+//       receiverId: asset.userId,
+//       title: messageTitle,
+//       body: messageBody,
+//       assetId: assetId,
+//     });
+//     await message.save();
+
+//     res.status(200).json({
+//       message: "Interest message sent to the asset owner",
+//       details: {
+//         ownerId: asset.userId,
+//         messageTitle: messageTitle,
+//       },
+//     });
+//   } catch (e) {
+//     console.log("Error:", e.message);
+//     res.status(500).json({
+//       error: e.message,
+//     });
+//   }
+// };
+
+//----notification alerrt------------------------------
+
+// POST: Create a notification when a buyer shows interest
+exports.createNotification = async (req, res) => {
+  const { assetId, ownerId, buyerId } = req.body;
+
+  // Ensure all required fields are present
+  if (!assetId || !ownerId || !buyerId) {
+    return res.status(400).json({ message: "Missing required fields" });
+    
+  }
+  console.log(assetId)
+  console.log(ownerId)
+  console.log(buyerId)
+
+  
+    // Fetch the buyer's contact number from the User model
+    const buyer = await User.findById(buyerId);
+    if (!buyer) {
+      return res.status(404).json({ message: "Buyer not found" });
+    }
+  try {
+    // Create the notification
+    const notification = new Notification({
+      assetId,
+      ownerId,
+      buyerId,
+      buyerContact: buyer.contact,
+      message: `A buyer has shown interest in your asset.`,
+    });
+
+    const result = await notification.save();
+
+    res.status(201).json({
+      message: "Notification created successfully",
+      notification: result,
+    });
+  } catch (err) {
+    console.error("Error creating notification:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err,
+    });
+  }
+};
+
+// GET: Fetch notifications for a specific owner
+exports.getNotificationsForOwner = async (req, res) => {
+  const { ownerId } = req.params;
+
+  try {
+    const notifications = await Notification.find({ ownerId })
+      .sort({ timestamp: -1 }) // Sort by newest notifications first
+      .populate("assetId", "assetname")
+      .populate("buyerId", "username");
+     
+    res.status(200).json(notifications);
+  } catch (err) {   
+    console.error("Error fetching notifications:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err,
     });
   }
 };
