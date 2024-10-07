@@ -29,20 +29,12 @@ exports.getposts = (req, res) => {
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find().select("-tokens -password -__v");
-
     res.status(200).json({
       userDetails: users,
     });
   } catch (err) {
     res.status(500).json({ message: "An error occurred", err });
   }
-  // User.find().
-  // select("-tokens -password -__v")
-  // .then((apiData)=>{
-  //     res.json({
-  //         Details:apiData
-  //     })
-  // })
 };
 
 //update the user values fetch from the id
@@ -135,7 +127,7 @@ exports.createPost = async (req, res) => {
 // login register api call----------------------------
 
 exports.register = async (req, res) => {
-  const { username, isowner, name,contactNumber, password, image } = req.body;
+  const { username, isowner, name, contactNumber, password, image } = req.body;
   const notNewUser = await User.isThisEmailInUse(username);
   if (notNewUser) {
     console.log("is already registered", notNewUser);
@@ -145,8 +137,16 @@ exports.register = async (req, res) => {
   }
 
   try {
-  const { username, isowner, name,contactNumber, password, image } = req.body;
-  const user = new User({ username, isowner, name,contactNumber, password, image });
+    const { username, isowner, name, contactNumber, password, image } =
+      req.body;
+    const user = new User({
+      username,
+      isowner,
+      name,
+      contactNumber,
+      password,
+      image,
+    });
     console.log("user----", user);
 
     //store in the database
@@ -309,7 +309,6 @@ exports.getUserAssetDetailsById = async (req, res) => {
   try {
     // Find the specific asset that matches the given userId and assetId
     const asset = await Assets.findOne({ userId: userId, _id: assetId });
-
     if (!asset) {
       return res.status(404).json({
         message: "Asset not found for the given user",
@@ -325,6 +324,9 @@ exports.getUserAssetDetailsById = async (req, res) => {
     });
   }
 };
+
+
+//---------------------create notification api callll=------------------------------------------------
 // exports.sendInterestMessage = async (req, res) => {
 //   const { assetId } = req.params; // Only assetId is needed here
 //   const interestedUserId = req.body.interestedUserId; // Assuming the interested user's ID is sent in the body
@@ -395,6 +397,7 @@ exports.getUserAssetDetailsById = async (req, res) => {
 //----notification alerrt------------------------------
 
 // POST: Create a notification when a buyer shows interest
+
 exports.createNotification = async (req, res) => {
   const { assetId, ownerId, buyerId } = req.body;
 
@@ -402,9 +405,10 @@ exports.createNotification = async (req, res) => {
   if (!assetId || !ownerId || !buyerId) {
     return res.status(400).json({ message: "Missing required fields" });
   }
-  console.log(assetId);
-  console.log(ownerId);
-  console.log(buyerId);
+
+  console.log("assetId:", assetId);
+  console.log("ownerId:", ownerId);
+  console.log("buyerId:", buyerId);
 
   // Fetch the buyer's contact number from the User model
   const buyer = await User.findById(buyerId);
@@ -413,21 +417,42 @@ exports.createNotification = async (req, res) => {
   }
 
   const buyerContact = buyer.contactNumber;
+
   try {
-    // Create the notification
+    // Check if there is any pending notification for the same asset and buyer
+    const existingNotification = await Notification.findOne({
+      assetId,
+      buyerId,
+      status: "pending", // Only look for notifications with pending status
+    });
+
+    console.log("existingNotification:", existingNotification); // Log the result
+
+    if (existingNotification) {
+      return res.status(400).json({
+        message: "You have already shown interest in this asset. Wait until the owner acknowledges your request.",
+      });
+    }
+
+    // If no pending notification, create a new one
     const notification = new Notification({
       assetId,
       ownerId,
       buyerId,
       buyerContact,
       message: `A buyer has shown interest in your asset.`,
+      status: "pending", // Set status to 'pending' during creation
+
     });
 
     const result = await notification.save();
 
+    // Exclude sensitive fields like message and buyerContact from the response
+    const notificationWithoutMessage = await Notification.findById(result._id).select("-message -buyerContact");
+
     res.status(201).json({
       message: "Notification created successfully",
-      notification: result,
+      notification: notificationWithoutMessage,
     });
   } catch (err) {
     console.error("Error creating notification:", err);
@@ -438,19 +463,55 @@ exports.createNotification = async (req, res) => {
   }
 };
 
+
 // GET: Fetch notifications for a specific owner
 exports.getNotificationsForOwner = async (req, res) => {
   const { ownerId } = req.params;
 
   try {
     const notifications = await Notification.find({ ownerId })
+      .select(" -ownerId")
       .sort({ timestamp: -1 }) // Sort by newest notifications first
       .populate("assetId", "assetname")
-      .populate("buyerId", "username");
+      .populate("buyerId", "username name",);
 
     res.status(200).json(notifications);
   } catch (err) {
     console.error("Error fetching notifications:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err,
+    });
+  }
+};
+
+//----api to update the status of the request, pendjg or seen the property by the owner
+
+// PUT: Update notification status to 'seen'
+exports.updateNotificationStatus = async (req, res) => {
+  const { notificationId } = req.params;
+
+  try {
+    // Find the notification by its ID and update the status to 'seen'
+    const notification = await Notification.findByIdAndUpdate(
+      notificationId,
+      { status: "seen" },
+      { new: true }
+    );
+
+    if (!notification) {
+      return res.status(404).json({
+        message: "Notification not found",
+      });
+    }
+console.log("Updated notification:", notification); // Log the updated notification
+
+    res.status(200).json({
+      message: "Notification status updated to 'seen'",
+      notification,
+    });
+  } catch (err) {
+    console.error("Error updating notification status:", err);
     res.status(500).json({
       message: "Server error",
       error: err,

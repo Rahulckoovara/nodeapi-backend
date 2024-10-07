@@ -13,11 +13,11 @@ const notificationSchema = new mongoose.Schema({
   },
   buyerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Assets", // Reference to the buyer showing interest (User model)
+    ref: "User", // Reference to the buyer showing interest (User model)
     required: true,
   },
   buyerContact: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Number,
     required: true,
   },
   message: {
@@ -26,8 +26,8 @@ const notificationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "seen"],
-    default: "pending",
+    enum: ["none","pending", "seen"],
+    default: "none",
   },
   timestamp: {
     type: Date,
@@ -36,5 +36,4 @@ const notificationSchema = new mongoose.Schema({
 });
 
 const Notification = mongoose.model("Notification", notificationSchema);
-
 module.exports = Notification;
