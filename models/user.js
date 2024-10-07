@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bycrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
-  username: {
+    username: {
     type: String,
     unique: true,
     required: true,
@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   contactNumber: {
-    type: String, // Assuming contact number is stored as a string
-    required: true,
+    type: Number, // Assuming contact number is stored as a string
+   
   },
   password: {
     type: String,
@@ -28,11 +28,10 @@ const userSchema = new mongoose.Schema({
       type: Object,
     },
   ],
-
   isowner: {
     type: Boolean,
     default: false,
-  },
+  }  ,
 });
 
 //middle ware for hashing
