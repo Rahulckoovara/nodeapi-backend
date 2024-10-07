@@ -40,12 +40,10 @@ const assetSchema= new mongoose.Schema({
     type:String,
     required :true
   },
-
     contact:{
       type:Number,
      
     },
-
     gallery: [
         {
           type: String, // Store each image as a string ( URL or Base64)

@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const Post = require("../models/post");
 const User = require("../models/user");
 const Assets = require("../models/housedetails");
-const Notification = require("../models/notification"); 
-const mongoose = require('mongoose');
+const Notification = require("../models/notification");
+const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 //------get call-------
 
@@ -311,8 +311,7 @@ exports.getUserAssetDetailsById = async (req, res) => {
 
     if (!asset) {
       return res.status(404).json({
-      message: "Asset not found for the given user",
-
+        message: "Asset not found for the given user",
       });
     }
 
@@ -343,7 +342,7 @@ exports.getUserAssetDetailsById = async (req, res) => {
 
 //   // Log the asset and its userId for debugging
 //   //  console.log("Found Asset:", asset);
-  
+
 //     console.log("Asset userId:", asset.userId);
 
 //     // Ensure both sides are compared as strings
@@ -401,25 +400,25 @@ exports.createNotification = async (req, res) => {
   // Ensure all required fields are present
   if (!assetId || !ownerId || !buyerId) {
     return res.status(400).json({ message: "Missing required fields" });
-    
   }
-  console.log(assetId)
-  console.log(ownerId)
-  console.log(buyerId)
+  console.log(assetId);
+  console.log(ownerId);
+  console.log(buyerId);
 
-  
-    // Fetch the buyer's contact number from the User model
-    const buyer = await User.findById(buyerId);
-    if (!buyer) {
-      return res.status(404).json({ message: "Buyer not found" });
-    }
+  // Fetch the buyer's contact number from the User model
+  const buyer = await User.findById(buyerId);
+  if (!buyer) {
+    return res.status(404).json({ message: "Buyer not found" });
+  }
+
+  const buyerContact = buyer.contactNumber;
   try {
     // Create the notification
     const notification = new Notification({
       assetId,
       ownerId,
       buyerId,
-      buyerContact: buyer.contact,
+      buyerContact,
       message: `A buyer has shown interest in your asset.`,
     });
 
@@ -447,9 +446,9 @@ exports.getNotificationsForOwner = async (req, res) => {
       .sort({ timestamp: -1 }) // Sort by newest notifications first
       .populate("assetId", "assetname")
       .populate("buyerId", "username");
-     
+
     res.status(200).json(notifications);
-  } catch (err) {   
+  } catch (err) {
     console.error("Error fetching notifications:", err);
     res.status(500).json({
       message: "Server error",
