@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   contactNumber: {
-    type: Number, // Assuming contact number is stored as a string
+    type: Number, 
+    required: true,
   },
   password: {
     type: String,

@@ -135,7 +135,7 @@ exports.createPost = async (req, res) => {
 // login register api call----------------------------
 
 exports.register = async (req, res) => {
-  const { username, isowner, name, password, image } = req.body;
+  const { username, isowner, name,contactNumber, password, image } = req.body;
   const notNewUser = await User.isThisEmailInUse(username);
   if (notNewUser) {
     console.log("is already registered", notNewUser);
@@ -145,7 +145,8 @@ exports.register = async (req, res) => {
   }
 
   try {
-    const user = new User({ username, isowner, name, password, image });
+  const { username, isowner, name,contactNumber, password, image } = req.body;
+  const user = new User({ username, isowner, name,contactNumber, password, image });
     console.log("user----", user);
 
     //store in the database
