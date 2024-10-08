@@ -475,7 +475,7 @@ exports.getNotificationsForOwner = async (req, res) => {
       .populate("assetId", "assetname")
       .populate("buyerId", "username name");
 
-    res.status(200).json(notifications);
+    res.status(200).json({notifications});
   } catch (err) {
     console.error("Error fetching notifications:", err);
     res.status(500).json({
@@ -490,7 +490,6 @@ exports.getNotificationsForOwner = async (req, res) => {
 // PUT: Update notification status to 'seen'
 exports.updateNotificationStatus = async (req, res) => {
   const { notificationId } = req.params;
-
   try {
     // Find the notification by its ID and update the status to 'seen'
     const notification = await Notification.findByIdAndUpdate(
