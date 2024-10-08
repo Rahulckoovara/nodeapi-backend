@@ -57,7 +57,7 @@ router.put(
 
 //14get the notificatipon status for the user
 router.get(
-  "/get-notification-status/:buyerId/:propertyId",
+  "/get-notification-status/:assetId/:buyerId",
   postControllers.checkNotificationStatus
 );
 

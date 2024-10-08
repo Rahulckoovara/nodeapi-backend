@@ -325,7 +325,6 @@ exports.getUserAssetDetailsById = async (req, res) => {
   }
 };
 
-
 //---------------------create notification api callll=------------------------------------------------
 // exports.sendInterestMessage = async (req, res) => {
 //   const { assetId } = req.params; // Only assetId is needed here
@@ -430,7 +429,8 @@ exports.createNotification = async (req, res) => {
 
     if (existingNotification) {
       return res.status(400).json({
-        message: "You have already shown interest in this asset. Wait until the owner acknowledges your request.",
+        message:
+          "You have already shown interest in this asset. Wait until the owner acknowledges your request.",
       });
     }
 
@@ -442,13 +442,14 @@ exports.createNotification = async (req, res) => {
       buyerContact,
       message: `A buyer has shown interest in your asset.`,
       status: "pending", // Set status to 'pending' during creation
-
     });
 
     const result = await notification.save();
 
     // Exclude sensitive fields like message and buyerContact from the response
-    const notificationWithoutMessage = await Notification.findById(result._id).select("-message -buyerContact");
+    const notificationWithoutMessage = await Notification.findById(
+      result._id
+    ).select("-message -buyerContact");
 
     res.status(200).json({
       message: "Notification created successfully",
@@ -463,7 +464,6 @@ exports.createNotification = async (req, res) => {
   }
 };
 
-
 // GET: Fetch notifications for a specific owner
 exports.getNotificationsForOwner = async (req, res) => {
   const { ownerId } = req.params;
@@ -473,7 +473,7 @@ exports.getNotificationsForOwner = async (req, res) => {
       .select(" -ownerId")
       .sort({ timestamp: -1 }) // Sort by newest notifications first
       .populate("assetId", "assetname")
-      .populate("buyerId", "username name",);
+      .populate("buyerId", "username name");
 
     res.status(200).json(notifications);
   } catch (err) {
@@ -504,7 +504,7 @@ exports.updateNotificationStatus = async (req, res) => {
         message: "Notification not found",
       });
     }
-console.log("Updated notification:", notification); // Log the updated notification
+    console.log("Updated notification:", notification); // Log the updated notification
 
     res.status(200).json({
       message: "Notification status updated to 'seen'",
@@ -519,13 +519,13 @@ console.log("Updated notification:", notification); // Log the updated notificat
   }
 };
 
-
-//get the notificatipon status for the user 
+//get the notificatipon status for the user
 
 exports.checkNotificationStatus = async (req, res) => {
-  const { assetId, buyerId } = req.query; // Use query params to pass assetId and buyerId
+  const { assetId, buyerId } = req.params; // Use query params to pass assetId and buyerId
 
-  // Ensure both assetId and buyerId are provided
+  console.log(assetId, buyerId);
+  // Ensure both assetId and buyerId aure provided
   if (!assetId || !buyerId) {
     return res.status(400).json({ message: "Missing required parameters" });
   }
