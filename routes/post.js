@@ -40,20 +40,26 @@ router.get("/assets", postControllers.getAllAssets);
 //9Fetch the details of a specific asset under the user by assetId
 router.get("/assets/:userId/:assetId", postControllers.getUserAssetDetailsById);
 
-//10 
+//10
 // router.post("/assets/:userId/:assetId/contact",postControllers.sendInterestMessage);
 
 //11 notification controllerss
 router.post("/create-notification", postControllers.createNotification);
- 
-//12 get the notification 
+
+//12 get the notification
 router.get("/:ownerId", postControllers.getNotificationsForOwner);
 
 //13 update the status of the request from the buyer
-router.put("/notifications/:notificationId",postControllers.updateNotificationStatus);
+router.put(
+  "/notifications/:notificationId",
+  postControllers.updateNotificationStatus
+);
 
-//14get the notificatipon status for the user 
-router.get("/get-notification-status/{buyerId}/{propertyId}",postControllers.checkNotificationStatus)
+//14get the notificatipon status for the user
+router.get(
+  "/get-notification-status/:buyerId/:propertyId",
+  postControllers.checkNotificationStatus
+);
 
 //logout
 //router.post("/logout",authenticateToken, postControllers.logout);
