@@ -450,7 +450,7 @@ exports.createNotification = async (req, res) => {
     // Exclude sensitive fields like message and buyerContact from the response
     const notificationWithoutMessage = await Notification.findById(result._id).select("-message -buyerContact");
 
-    res.status(201).json({
+    res.status(200).json({
       message: "Notification created successfully",
       notification: notificationWithoutMessage,
     });
