@@ -47,7 +47,7 @@ router.get("/assets/:userId/:assetId", postControllers.getUserAssetDetailsById);
 router.post("/create-notification", postControllers.createNotification);
 
 //12 get the notification
-router.get("/:ownerId", postControllers.getNotificationsForOwner);
+router.get("/notifications-list/:ownerId", postControllers.getNotificationsForOwner);
 
 //13 update the status of the request from the buyer
 router.put(
