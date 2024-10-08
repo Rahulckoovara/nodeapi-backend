@@ -52,6 +52,8 @@ router.get("/:ownerId", postControllers.getNotificationsForOwner);
 //13 update the status of the request from the buyer
 router.put("/notifications/:notificationId",postControllers.updateNotificationStatus);
 
+//14get the notificatipon status for the user 
+router.get("/get-notification-status/{buyerId}/{propertyId}",postControllers.checkNotificationStatus)
 
 //logout
 //router.post("/logout",authenticateToken, postControllers.logout);
