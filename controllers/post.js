@@ -524,7 +524,6 @@ exports.updateNotificationStatus = async (req, res) => {
 exports.checkNotificationStatus = async (req, res) => {
   const { assetId, buyerId } = req.params; // Use query params to pass assetId and buyerId
 
-  console.log(assetId, buyerId);
   // Ensure both assetId and buyerId aure provided
   if (!assetId || !buyerId) {
     return res.status(400).json({ message: "Missing required parameters" });
@@ -539,7 +538,7 @@ exports.checkNotificationStatus = async (req, res) => {
 
     // Check if a notification exists
     if (!notification) {
-      return res.status(404).json({
+      return res.status(200).json({
         message: "No notification found for this asset and buyer.",
       });
     }
