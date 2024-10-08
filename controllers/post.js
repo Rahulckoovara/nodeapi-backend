@@ -518,3 +518,42 @@ console.log("Updated notification:", notification); // Log the updated notificat
     });
   }
 };
+
+
+//get the notificatipon status for the user 
+
+exports.checkNotificationStatus = async (req, res) => {
+  const { assetId, buyerId } = req.query; // Use query params to pass assetId and buyerId
+
+  // Ensure both assetId and buyerId are provided
+  if (!assetId || !buyerId) {
+    return res.status(400).json({ message: "Missing required parameters" });
+  }
+
+  try {
+    // Find the most recent notification for the asset and buyer, sorted by creation time (optional)
+    const notification = await Notification.findOne({
+      assetId,
+      buyerId,
+    }).sort({ createdAt: -1 }); // Sort to get the latest notification
+
+    // Check if a notification exists
+    if (!notification) {
+      return res.status(404).json({
+        message: "No notification found for this asset and buyer.",
+      });
+    }
+
+    // Send the status of the found notification
+    res.status(200).json({
+      message: "Notification status retrieved successfully",
+      status: notification.status, // Return the notification's status (pending, seen, etc.)
+    });
+  } catch (err) {
+    console.error("Error checking notification status:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err,
+    });
+  }
+};
