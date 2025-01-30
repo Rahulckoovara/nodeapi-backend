@@ -1,4 +1,4 @@
-const express = require("express");
+  const express = require("express");
 
 const postControllers = require("../controllers/post");
 const { createPostValidator } = require("../validators");
@@ -26,7 +26,7 @@ router.get("/userdetails", postControllers.getUsers);
 router.get("/userdetails/:id", postControllers.getUserById);
 
 //5update the user data with the user id
-router.put("/userdetails/:id", postControllers.updateUser);
+router.put("/userdetails/update/:id", postControllers.updateUser);
 
 //6registering the asset with details
 router.post("/assetdetails", postControllers.assets);

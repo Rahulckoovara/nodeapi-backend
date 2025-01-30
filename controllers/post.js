@@ -4,6 +4,7 @@ const User = require("../models/user");
 const Assets = require("../models/housedetails");
 const Notification = require("../models/notification");
 const mongoose = require("mongoose");
+const { response } = require("express");
 const ObjectId = mongoose.Types.ObjectId;
 //------get call-------
 
@@ -57,6 +58,7 @@ exports.updateUser = async (req, res) => {
     res.status(200).json({
       //  _id:_id.user._id,
       message: "user details successfully updated",
+      result: user,
 
       //     user:{
       //     _id: user._id,
@@ -470,13 +472,14 @@ exports.getNotificationsForOwner = async (req, res) => {
 
   try {
     const notifications = await Notification.find({ ownerId })
-      .select(" -ownerId")
+      .select("-ownerId")
       .sort({ timestamp: -1 }) // Sort by newest notifications first
       .populate("assetId", "assetname")
       .populate("buyerId", "username name");
 
     res.status(200).json({notifications});
-  } catch (err) {
+  }
+   catch (err) {
     console.error("Error fetching notifications:", err);
     res.status(500).json({
       message: "Server error",
