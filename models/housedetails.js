@@ -27,6 +27,10 @@ const assetSchema= new mongoose.Schema({
     type: Number,
     required: true 
    },
+   homeType: {
+    type: String,
+    required: true 
+   },
    description: {
     type: String,
     required: true 

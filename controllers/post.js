@@ -229,7 +229,7 @@ exports.assets = async (req, res) => {
     bedrooms,
     commonHall,
     bathroom,
-
+    homeType,
     description,
     price,
     thumbimage,
@@ -246,6 +246,7 @@ exports.assets = async (req, res) => {
       bedrooms,
       commonHall,
       bathroom,
+      homeType,
       description,
       price,
       thumbimage,
@@ -477,9 +478,8 @@ exports.getNotificationsForOwner = async (req, res) => {
       .populate("assetId", "assetname")
       .populate("buyerId", "username name");
 
-    res.status(200).json({notifications});
-  }
-   catch (err) {
+    res.status(200).json({ notifications });
+  } catch (err) {
     console.error("Error fetching notifications:", err);
     res.status(500).json({
       message: "Server error",
