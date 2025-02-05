@@ -61,6 +61,14 @@ router.get(
   postControllers.checkNotificationStatus
 );
 
+//15for adding the property to the favourite list
+router.post('/favorites', postControllers.addFavorite);
+
+//16 remove from the fav list
+router.post('/favorites/remove', postControllers.removeFavorite);
+
+
+
 //logout
 //router.post("/logout",authenticateToken, postControllers.logout);
 

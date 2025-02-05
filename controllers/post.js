@@ -558,3 +558,62 @@ exports.checkNotificationStatus = async (req, res) => {
     });
   }
 };
+
+// Add property to user's favorites
+exports.addFavorite = async (req, res) => {
+  try {
+    const { userId, propertyId } = req.body;
+
+    if (!userId || !propertyId) {
+      return res.status(400).json({ error: 'User ID and Property ID are required.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    // Avoid duplicate favorites
+    if (!user.favorites.includes(propertyId)) {
+      user.favorites.push(propertyId);
+      await user.save();
+      return res.status(200).json({ message: 'Property added to favorites successfully.' });
+    }
+
+    return res.status(200).json({ message: 'Property is already in favorites.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
+//remove from the fav list
+exports.removeFavorite = async (req, res) => {
+  try {
+    const { userId, propertyId } = req.body;
+
+    if (!userId || !propertyId) {
+      return res.status(400).json({ error: 'User ID and Property ID are required.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    const propertyIndex = user.favorites.findIndex(
+      id => id.toString() === propertyId.toString()
+    );
+
+    if (propertyIndex >= 0) {
+      user.favorites.splice(propertyIndex, 1);
+      await user.save();
+      return res.status(200).json({ message: 'Property removed from favorites successfully.' });
+    }
+
+    return res.status(404).json({ error: 'Property not found in favorites.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+};

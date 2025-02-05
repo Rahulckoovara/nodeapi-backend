@@ -31,6 +31,13 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  // New field for storing favorite property IDs
+  favorites: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Property", // Assuming you have a Property schema
+    },
+  ],
 });
 
 //middle ware for hashing
